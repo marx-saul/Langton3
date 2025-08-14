@@ -111,20 +111,48 @@ func _on_edit_button_pressed() -> void:
 	
 	refresh_ants_edit()
 
-func edit_table():
-	var mouse_pos = get_viewport().get_mouse_position()
-	var x = mouse_pos.x / cell_size_x
-	var y = mouse_pos.y / cell_size_y
+func edit_table(x: int, y: int):
 	if 0 <= x && x < cell_num_x and 0 <= y && y < cell_num_y:
 		$Table.cells[x][y].change_state(color_button_state)
 
+# Bresenham's line algorithm
+func edit_table_line():
+	var x0 = int(mouse_pos.x/cell_size_x)
+	var y0 = int(mouse_pos.y/cell_size_y)
+	var x1 = int(get_viewport().get_mouse_position().x / cell_size_x)
+	var y1 = int(get_viewport().get_mouse_position().y / cell_size_y)
+	var dx = x1 - x0
+	var dy = y1 - y0
+	var nx = abs(dx)
+	var ny = abs(dy)
+	var sx = sign(dx)
+	var sy = sign(dy)
+	
+	var x = x0
+	var y = y0
+	var ix = 0
+	var iy = 0
+	while ix < nx || iy < ny:
+		if (1+ix+ix)*ny < (1+iy+iy)*nx:
+			x += sx
+			ix += 1
+		else:
+			y += sy
+			iy += 1
+		edit_table(x, y)
+
 var mouse_down: bool
+var mouse_pos: Vector2
 func _input(event):
 	if event is InputEventMouseButton:
 		mouse_down = event.pressed
-		edit_table()
+		mouse_pos = get_viewport().get_mouse_position()
+		if is_stopped:
+			edit_table(get_viewport().get_mouse_position().x / cell_size_x, get_viewport().get_mouse_position().y / cell_size_y)
 	elif event is InputEventMouseMotion and mouse_down and is_stopped:
-		edit_table()
+		edit_table_line()
+		mouse_pos = get_viewport().get_mouse_position()
+		
 
 func _ready():
 	$Control/Cell.init(0, 40, 40)
