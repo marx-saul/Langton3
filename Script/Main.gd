@@ -75,11 +75,12 @@ func _on_ants_list_item_selected(index: int) -> void:
 	refresh_ants_edit()
 	
 func _on_delete_button_pressed() -> void:
-	if $Control/ntsList.get_selected_id() < 0: return
+	if $Control/AntsList.get_selected_id() < 0: return
 	ants_data.remove($Control/AntsList.get_selected_id())
 	ants_x.remove($Control/AntsList.get_selected_id())
 	ants_y.remove($Control/AntsList.get_selected_id())
-	$Control/AntsList.remove_item($Control/AntsList.item_count-1)
+	$Control/AntsList.remove_item($Control/AntsList.get_item_count()-1)
+	$Control/AntsList.select($Control/AntsList.get_item_count()-1)
 	refresh_ants_edit()
 
 func _on_add_button_pressed() -> void:
@@ -107,7 +108,7 @@ func _on_edit_button_pressed() -> void:
 	ants_data[$Control/AntsList.selected] = fixed_text
 	ants_dir[$Control/AntsList.selected] = $Control/DirList.selected
 	ants_x[$Control/AntsList.selected] = x
-	ants_x[$Control/AntsList.selected] = y
+	ants_y[$Control/AntsList.selected] = y
 	
 	refresh_ants_edit()
 

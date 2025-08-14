@@ -40,6 +40,7 @@ func init(cnx:int, cny:int, csx:int, csy:int):
 
 func clear():
 	simulating = false
+	current_ant_num = 0
 	for i in range(cell_num_x):
 		for j in range(cell_num_y):
 			cells[i][j].change_state(0)
